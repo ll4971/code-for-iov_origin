@@ -7,6 +7,7 @@ spc = [20	20	22	27	30	30	32	33	34	46];   % 买家需求频谱资源
 COM = [80	50	100	70	150	200	90];   % 卖家供给计算资源
 SPC = [40	60	80	60	100	140	100];  % 卖家供给传输资源
 N = [160	150	180	165	190	200	170];  % 卖价
+Ur = [0.1 0.6 0.1 0.1 1 0.6 0.1 0.1 0.6 0.6 1]*10; %紧急程度
 r = [0.7	0.2	0.3	0.8	0.1	0.8	0.7	0.3	1	0.7
     0.6	0.2	0.3	0.7	0.2	0.9	0.8	0.4	0.8	0.6
     0.6	0.3	0.5	0.6	0.1	0.8	0.8	0.3	0.9	0.6
@@ -14,7 +15,7 @@ r = [0.7	0.2	0.3	0.8	0.1	0.8	0.7	0.3	1	0.7
     0.7	0.4	0.2	0.8	0.1	0.8	0.9	0.4	0.9	0.5
     0.5	0.4	0.2	0.9	0.2	0.7	0.8	0.5	0.9	0.7
     0.6	0.2	0.3	0.6	0.3	0.9	0.7	0.3	0.8	0.6
-    ] * 10; %信誉值
+    ]*10; %信誉值
 r = r'; %行代表V，列代表RSU，[1,2]代表V1对RSU2
 D = [15	18	25	27	30	17	10	18	7	5
     20	13	17	19	5	7	17	30	13	12
@@ -42,7 +43,7 @@ Pm = 0.2;
 M = 2;            % 目标函数个数
 dim = m * 2 ;      % 决策变量维数
 %% 初始化种群
-chrom = initpop(NP, M, dim, m, n, com, spc, COM, SPC, N, r ,D, x0 ,rho, v,ka, epsilon, sigma, p);
+chrom = initpop(NP, M, dim, m, n, com, spc, COM, SPC, N, r ,Ur, D, x0 ,rho, v,ka, epsilon, sigma, p);
 
 %% 非支配排序（non-domination-sort）
 chrom = nonDominatedSort(chrom, M, dim );
@@ -57,7 +58,7 @@ for gen = 1 : maxgen
     % 选择操作    
     parentchrom = tournamentSelect(chrom, pool, tour);   
     % 交叉和变异操作
-    newchrom = geneOperator(parentchrom, M, dim, Pm, Pc, m, n, com, spc, COM, SPC, N, r ,D, x0 , rho, v,ka, epsilon, sigma, p);   
+    newchrom = geneOperator(parentchrom, M, dim, Pm, Pc, m, n, com, spc, COM, SPC, N, r ,Ur, D, x0 , rho, v,ka, epsilon, sigma, p);   
     % 子代个体和父代个体融合
     Nc = size(chrom,1);
     Nn = size(newchrom,1);

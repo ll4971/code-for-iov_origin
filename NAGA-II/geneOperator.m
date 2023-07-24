@@ -1,4 +1,4 @@
-function newchrom  = geneOperator(parentchrom, M, dim, Pm, Pc, m, n, com, spc, COM, SPC, N, r ,D, x0 , rho, v, ka, epsilon, sigma, p)
+function newchrom  = geneOperator(parentchrom, M, dim, Pm, Pc, m, n, com, spc, COM, SPC, N, r ,Ur, D, x0 , rho, v, ka, epsilon, sigma, p)
 % 函数根据父代个体产生子代个体
 NP = size(parentchrom,1);
 newchrom = parentchrom(:,1:M+dim);
@@ -18,8 +18,8 @@ for i = 1 :2: (NP-rem(NP,2))
     newchrom(i,1:dim) = ch1;
     newchrom(i+1,1:dim) = ch2;
     % 计算子代个体的目标函数值
-    newchrom(i,dim+1:M+dim) = fitness(newchrom(i,1:dim), m, n, com, spc, COM, SPC, N, r ,D, x0 , rho, v,ka, epsilon, sigma, p);
-    newchrom(i+1,dim+1:M+dim) = fitness(newchrom(i+1,1:dim), m, n, com, spc, COM, SPC, N, r ,D, x0 , rho, v,ka, epsilon, sigma, p);
+    newchrom(i,dim+1:M+dim) = fitness(newchrom(i,1:dim), m, n, com, spc, COM, SPC, N, r ,Ur, D, x0 , rho, v,ka, epsilon, sigma, p);
+    newchrom(i+1,dim+1:M+dim) = fitness(newchrom(i+1,1:dim), m, n, com, spc, COM, SPC, N, r ,Ur, D, x0 , rho, v,ka, epsilon, sigma, p);
 end
 for i = 1 : NP
     x = parentchrom(i,1:dim);
@@ -28,7 +28,7 @@ for i = 1 : NP
         x(r0) = randi(n);
     end
     ch(1:dim) = x;
-    ch(1,dim+1:M+dim) = fitness(ch, m, n, com, spc, COM, SPC, N, r ,D, x0 , rho, v,ka, epsilon, sigma, p);
+    ch(1,dim+1:M+dim) = fitness(ch, m, n, com, spc, COM, SPC, N, r ,Ur, D, x0 , rho, v,ka, epsilon, sigma, p);
     newchrom(i,:) = ch;
 end
 end

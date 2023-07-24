@@ -1,5 +1,5 @@
-function fit = fitness(ch, m, n, com, spc, COM, SPC, N, r ,D, x0 , rho, v, ka, epsilon, sigma, p)
-ch = round(ch); 
+function fit = fitness(ch, m, n, com, spc, COM, SPC, N, r ,Ur, D, x0 , rho, v, ka, epsilon, sigma, p) 
+ch = round(ch)
 x = ch(1:m);
 y = ch(m+1:m*2);
 lambda = zeros(m, n);
@@ -14,17 +14,17 @@ C = zeros(1, m);
 for i = 1 : m
    C(i) = 0;
    for j = 1 : n
-      C(i) = C(i) +  N(j) / r(i,j) *10/ceil(i*3/7)* (lambda(i,j) * com(i) + u(i,j) * spc(i));
+      C(i) = C(i) +  N(j) / r(i,j) / Ur(i) * (lambda(i,j) * com(i) + u(i,j) * spc(i));
    end
 end
-% 
+
 R = zeros(1, n);
 for j = 1 : n
    R(j) = 0;
    rnew(j)=0;
    for i = 1 : m
-      R(j) = R(j) +  (N(j) * r(i,j)*10/ceil(i*3/7) - 0.5) * (lambda(i,j) * com(i) + u(i,j) * spc(i));
-      rnew(j)=r(i,j)*10/ceil(i*3/7)+ rnew(j);
+      R(j) = R(j) +  (N(j) * r(i,j)* Ur(i)  - 0.5) * (lambda(i,j) * com(i) + u(i,j) * spc(i));
+      rnew(j)=r(i,j)/ceil(i*3/7)+ rnew(j);
    end
 end
 u = zeros(1, n);

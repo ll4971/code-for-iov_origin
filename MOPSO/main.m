@@ -7,6 +7,7 @@ spc = [20	20	22	27	30	30	32	33	34	46];   % 买家需求频谱资源
 COM = [80	50	100	70	150	200	90];   % 卖家供给计算资源
 SPC = [40	60	80	60	100	140	100];  % 卖家供给传输资源
 N = [160	150	180	165	190	200	170];  % 卖价
+Ur = [0.1 0.6 0.1 0.1 1 0.6 0.1 0.1 0.6 0.6 1]*10; %紧急程度
 r = [0.7	0.2	0.3	0.8	0.1	0.8	0.7	0.3	1	0.7
     0.6	0.2	0.3	0.7	0.2	0.9	0.8	0.4	0.8	0.6
     0.6	0.3	0.5	0.6	0.1	0.8	0.8	0.3	0.9	0.6
@@ -55,7 +56,7 @@ fx = zeros(NP, M);
 for i = 1:NP
     X(i,:) = initpop(m, n, com, spc, COM, SPC);
     V(i,:) = Vmin + (Vmax - Vmin) .* rand(1,dim);
-    fx(i,:) = fitness(X(i,:), m, n, com, spc, COM, SPC, N, r ,D, x0 , rho, v, ka, epsilon, sigma, p);
+    fx(i,:) = fitness(X(i,:), m, n, com, spc, COM, SPC, N, r ,Ur, D, x0 , rho, v, ka, epsilon, sigma, p);
 end
 
 pbest = X;
@@ -66,6 +67,7 @@ rep.fx = fx(Idx,:);
 rep = updateGrid(rep,ngrid);
 figure(1)
 for gen = 1:maxgen
+    gen
     % 选择leader
     h = selectLeader(rep);
     gbest = rep.X(h,:);
@@ -87,7 +89,7 @@ for gen = 1:maxgen
         X(i,index) = Xmin(index);
         
         % 评价适应度
-        fx(i,:) = fitness(X(i,:), m, n, com, spc, COM, SPC, N, r ,D, x0 , rho, v,ka, epsilon, sigma, p);
+        fx(i,:) = fitness(X(i,:), m, n, com, spc, COM, SPC, N, r ,Ur, D, x0 , rho, v,ka, epsilon, sigma, p);
     end
     % 更新repository
     rep = updateRepository(rep,X,fx,ngrid);
