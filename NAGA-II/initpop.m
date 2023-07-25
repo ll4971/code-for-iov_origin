@@ -8,7 +8,7 @@ for i = 1 : NP
     while 1
         
         x = randi(n, 1, m); % 生成m个1~n的随机数，索引买家对应的卖家
-        cs = zeros(1, n);  % 卖家实际供应量
+        cs = zeros(1, n);  % 卖家计算资源实际供应量
         for k = 1 : n
             cs(k) = sum(com(x == k)); % 卖家k的供应量
         end
@@ -18,7 +18,7 @@ for i = 1 : NP
     end
     while 1
         y = randi(n, 1, m);
-        ss = zeros(1, n);  % 卖家实际供应量
+        ss = zeros(1, n);  % 卖家频谱资源实际供应量
         for k = 1 : n
             ss(k) = sum(spc(y == k));
         end

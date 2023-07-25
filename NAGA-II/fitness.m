@@ -20,12 +20,13 @@ end
 R = zeros(1, n);
 for j = 1 : n
    R(j) = 0;
-   rnew(j)=0;
+   rRSU(j)=0;
    for i = 1 : m
       R(j) = R(j) +  (N(j) * r(i,j)* Ur(i) - 0.5) * (lambda(i,j) * com(i) + u(i,j) * spc(i)); % 第j个RSU出售收益
-      rnew(j)=r(i,j)/ceil(i*3/7)+ rnew(j);
+      rRSU(j) = r(i,j)+ rRSU(j);
    end
 end
+
 u = zeros(1, n);
 cs = zeros(1, n);
 ss = zeros(1, n);
@@ -33,14 +34,15 @@ ss = zeros(1, n);
 for k = 1 : n
     cs(k) = sum(com(x == k));
     ss(k) = sum(spc(y == k));
-    u(k)=rnew(k)*(max(cs(k)-COM(k),0)+ max(ss(k)-SPC(k),0))+u(k);   
+    u(k)=rRSU(k)*(COM(k)-cs(k)+ SPC(k)-ss(k))+u(k);   
 end
 U = ka *(-rho * sum(C) + v * sum(R))+ 1/ka *sum(u) ;
-%
+
+%能耗计算
 E = epsilon * sum(com .* x0);
 for i = 1 : m
-    h = 35.2 + 35 * log(D(i,y(i))) / log(10);
-    E = E + p * x0(i) / (spc(i) * log(1 + p * h /sigma^2) / log(2));
+    h = 1 + exp(10-5*log10(D(i,y(i))));
+    E = E + p * x0(i) / (spc(i) * log2(1 + p * h /sigma^2));
 end
 %% 约束处理
 gfun = 0;
