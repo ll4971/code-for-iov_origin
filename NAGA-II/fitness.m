@@ -41,7 +41,7 @@ U = ka *(-rho * sum(C) + v * sum(R))+ 1/ka *sum(u) ;
 %ÄÜºÄ¼ÆËã
 E = epsilon * sum(com .* x0);
 for i = 1 : m
-    h = 1e-6 + exp(10-10*log10(D(i,y(i))));
+    h = 1e-8 + exp(2-5*log10(D(i,y(i))));
     E = E + p * x0(i) / (spc(i) * log2(1 + p * h /sigma^2));
 end
 
@@ -59,6 +59,9 @@ for k = 1 : n
     ss(k) = sum(spc(y == k));
     gfun = gfun + max(ss(k)-SPC(k),0);
 end
+
+
+
 
 
 fit = [-U E] + gfun * 1e8;

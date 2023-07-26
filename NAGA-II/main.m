@@ -2,7 +2,7 @@
 clc
 clear
 close all
-num_experiments = 1;
+num_experiments = 10;
 distanceGenerate(); % 获得距离
 for times = 1:num_experiments
     rng(times);
@@ -49,13 +49,13 @@ for times = 1:num_experiments
     ka = 10;   %
     v = 0.5;    % 最大收益目标函数卖家收入占比
     epsilon = 1;
-    sigma = 1;
-    p = 10; % 传输功率
+    sigma = 0.8;
+    p = 1000; % 传输功率
     m = length(com);  % 买家数量
     n = length(COM);  % 卖家数量
     %% 算法数据
     NP = 80;          % 种群数量
-    maxgen = 800;     % 迭代次数
+    maxgen = 600;     % 迭代次数
     Pc = 0.8;
     Pm = 0.2;
     M = 2;            % 目标函数个数
@@ -69,6 +69,7 @@ for times = 1:num_experiments
     %% 进化过程
     figure(1);
     for gen = 1 : maxgen
+        times
         gen
         % 选择父代用于繁殖后代。原始NSGA-II采用基于拥挤度比较算子的二进制锦标赛进行选择的
         pool = round(NP/2);
@@ -125,12 +126,22 @@ for times = 1:num_experiments
     file_path = 'E:\papper\iov\程序'; % 修改为你希望保存的文件夹路径
 
     %保存帕累托解集
-    file_name = 'Pareto_results.xlsx'; % 修改为你希望保存的文件名
+    file_name_01 = 'Pareto_results.xlsx'; % 修改为你希望保存的文件名
     gbest(:, 21) = -gbest(:, 21);   % 21列取反
-    file_restore = gbest(:,[21:22]);   %保存21和22列
+    file_restore_01 = gbest(:,[21:22]);   %保存21和22列
+    
+    %保存总价值
+    file_name_02 = 'Revenue_results.xlsx'; % 修改为你希望保存的文件名
+    file_restore_02 = FG1;   %保存21和22列
+    
+    %保存总能耗
+    file_name_03 = 'Comsumption_results.xlsx'; % 修改为你希望保存的文件名
+    file_restore_03 = FG2;   %保存21和22列
+    
 
     % 使用 xlswrite 函数保存数据到 Excel 文件中
-    xlswrite(fullfile(file_path, file_name), file_restore, times, 'A1'); % 将数据从 A1 单元格开始保存
-
+    xlswrite(fullfile(file_path, file_name_01), file_restore_01, times, 'A1'); % 将数据从 A1 单元格开始保存
+    xlswrite(fullfile(file_path, file_name_02), file_restore_02, times, 'A1'); % 将数据从 A1 单元格开始保存
+    xlswrite(fullfile(file_path, file_name_03), file_restore_03, times, 'A1'); % 将数据从 A1 单元格开始保存
 end
 
