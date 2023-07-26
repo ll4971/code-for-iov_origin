@@ -41,9 +41,10 @@ U = ka *(-rho * sum(C) + v * sum(R))+ 1/ka *sum(u) ;
 %能耗计算
 E = epsilon * sum(com .* x0);
 for i = 1 : m
-    h = 1 + exp(10-5*log10(D(i,y(i))));
+    h = 1e-6 + exp(10-10*log10(D(i,y(i))));
     E = E + p * x0(i) / (spc(i) * log2(1 + p * h /sigma^2));
 end
+
 %% 约束处理
 gfun = 0;
 cs = zeros(1, n);  % 卖家实际供应量
