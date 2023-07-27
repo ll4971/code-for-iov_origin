@@ -14,9 +14,9 @@ for times = 1:num_experiments
     SPC = [40	60	80	60	100	140	100];  % 卖家供给传输资源
     N = [160	150	180	165	190	200	170];  % 卖价
     
-    swt = 1; % 1：添加紧急程度；0：取消紧急程度
+    swt = 0; % 1：添加紧急程度；0：取消紧急程度
     if swt == 1
-        Ur = [0.1 0.6 0.1 0.1 1 0.6 0.1 0.1 0.6 1]*10; %紧急程度
+        Ur = [0.1 0.6 0.1 0.1 0.6 0.1 0.1 1 0.6 0.1]*5; %紧急程度
     elseif swt ==0
         Ur = ones(1,10);
     end
@@ -123,8 +123,11 @@ for times = 1:num_experiments
     
     
     %%保存至excel
-    file_path = 'E:\papper\iov\程序'; % 修改为你希望保存的文件夹路径
-
+    if swt == 0
+        file_path = '../NAGA-II_results'; % 修改为你希望保存的文件夹路径
+    elseif swt == 1
+        file_path = '../NAGA-II_results_Ur'; % 修改为你希望保存的文件夹路径
+    end
     %保存帕累托解集
     file_name_01 = 'Pareto_results.xlsx'; % 修改为你希望保存的文件名
     gbest(:, 21) = -gbest(:, 21);   % 21列取反
@@ -135,7 +138,7 @@ for times = 1:num_experiments
     file_restore_02 = FG1;   %保存21和22列
     
     %保存总能耗
-    file_name_03 = 'Comsumption_results.xlsx'; % 修改为你希望保存的文件名
+    file_name_03 = 'Consumption_results.xlsx'; % 修改为你希望保存的文件名
     file_restore_03 = FG2;   %保存21和22列
     
 
