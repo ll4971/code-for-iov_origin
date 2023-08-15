@@ -2,10 +2,10 @@
 clc
 clear
 close all
-num_experiments = 10;
+num_experiments = 1;
 distanceGenerate(); % 获得距离
 for times = 1:num_experiments
-    rng(times);
+    rng(8);
     %% 输入数据
     com = [30	33	36	46	49	50	54	57	59	59];   % 买家需求计算资源
     x0 = [150 168 182 230 245 248 266 279 302 311]; % 买家需求任务量
@@ -143,8 +143,8 @@ for times = 1:num_experiments
     
 
     % 使用 xlswrite 函数保存数据到 Excel 文件中
-    xlswrite(fullfile(file_path, file_name_01), file_restore_01, times, 'A1'); % 将数据从 A1 单元格开始保存
-    xlswrite(fullfile(file_path, file_name_02), file_restore_02, times, 'A1'); % 将数据从 A1 单元格开始保存
-    xlswrite(fullfile(file_path, file_name_03), file_restore_03, times, 'A1'); % 将数据从 A1 单元格开始保存
+%     xlswrite(fullfile(file_path, file_name_01), file_restore_01, times, 'A1'); % 将数据从 A1 单元格开始保存
+%     xlswrite(fullfile(file_path, file_name_02), file_restore_02, times, 'A1'); % 将数据从 A1 单元格开始保存
+%     xlswrite(fullfile(file_path, file_name_03), file_restore_03, times, 'A1'); % 将数据从 A1 单元格开始保存
 end
 
