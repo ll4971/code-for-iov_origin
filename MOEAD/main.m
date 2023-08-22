@@ -33,15 +33,15 @@ for times = 1:num_experiments
     n = length(COM);
 
     % 算法参数
-    NP = 80; %种群数量
-    maxGenerations = 600;   %迭代次数
-    subproblemSize = 8;
+    NP = 100; %种群数量
+    maxGenerations = 60;   %迭代次数
+    subproblemSize = 10;
     numObjectives = 2; %目标函数个数
     numSubproblems = ceil(NP / subproblemSize);
     dim = m * 2;
-    F = 0.8;
-    CR = 0.2;
-
+    F0 = 1.2;
+    CR0 = 0.6;
+    gbest = zeros(1,22);
     
     % 初始化种群
     population = initPop(NP, numObjectives, dim, m, n, com, spc, COM, SPC, N, r, Ur, D, x0, rho, v, ka, epsilon, sigma, p);    
@@ -53,13 +53,17 @@ for times = 1:num_experiments
     population = nonDominatedSort(population, numObjectives, dim);
 
     for gen = 1:maxGenerations
+        gen
         for i = 1:numSubproblems
+            lamda = exp(1-maxGenerations/(maxGenerations+1-gen));
+            F = F0*2^lamda;
+            CR = CR0*(1-lamda);
             % 根据权重向量和种群，选择邻居个体
             neighbors = selectNeighbors(i, weightVectors, population, subproblemSize); 
             % 交叉和变异操作
-            newchrom = geneOperator(neighbors, numObjectives, dim, F, CR, m, n, com, spc, COM, SPC, N, r ,Ur, D, x0 , rho, v,ka, epsilon, sigma, p); 
+%             newchrom = geneOperator(neighbors, numObjectives, dim, F, CR, m, n, com, spc, COM, SPC, N, r ,Ur, D, x0 , rho, v,ka, epsilon, sigma, p); 
             % 执行子问题上的进化操作（交叉、变异等）
-            offspring = evolveSubproblem(i, neighbors(:,1:dim+2), weightVectors, F, CR, m, n, com, spc, COM, SPC, N, r, Ur, D, x0, rho, v, ka, epsilon, sigma, p);
+            offspring = evolveSubproblem(gbest, i, neighbors(:,1:dim+2), weightVectors, F, CR, m, n, com, spc, COM, SPC, N, r, Ur, D, x0, rho, v, ka, epsilon, sigma, p);
             % 更新外部存档
 %             population = updateExternalArchive(population, offspring);
             Nc = size(population,1);
@@ -70,23 +74,26 @@ for times = 1:num_experiments
             population = replace_chromosome(allchrom, numObjectives, dim, NP);
             FG1(gen,1) = -min(population(:,dim + 1));
             FG2(gen,1) = min(population(:,dim + 2));
+            figure(1);
             plot(-population(:,dim + 1) ,population(:,dim + 2),'*');
             str = sprintf('多目标遗传算法帕累托求解第%d次迭代',gen);
             title(str)
             xlabel('卖价与买价差值');
             ylabel('资源耗能和');
             pause(0.05)
-            hold off
+
+            % 提取当前迭代的Pareto前沿
+
         end
-        
-        % 提取当前迭代的Pareto前沿
-        gbest = population(:,1:dim+numObjectives);
-        gbest = unique(gbest,'rows');
-        % 更新权重向量
-        weightVectors = updateWeightVectors(weightVectors, gbest);
-    
+            gbest = population(:,1:dim+numObjectives);
+            gbest = unique(gbest,'rows');
+            % 更新权重向量
+            figure(2);
+            plot(weightVectors(:,1),weightVectors(:,2));
+            weightVectors = updateWeightVectors(weightVectors, gbest);
         % 保存当前迭代的结果
 %         saveResults(paretoFront, times, gen);
+
     end
 
 end
