@@ -16,72 +16,61 @@ function offspring = evolveSubproblem(gbest, i, neighbors, weightVectors, F, CR,
             c = gbest(1,:);
         end
         
-        trial = zeros(1, dim + 2); % 初始化试验个体
-        trial_vars = gendifEvo(trial, parent(1:dim), a(1:dim), b(1:dim), c(1:dim), F, CR);% 差分进化函数
-        
+        trial = zeros(1, dim+2); % 初始化试验个体
+%       trial_vars = gendifEvo(trial, parent(1:dim), a(1:dim), b(1:dim), c(1:dim), F, CR);% 差分进化函数
+        trial_vars = gendifEvo(parent(1:dim), F, CR, c(1:dim), dim, n);% 差分进化函数
         % 进行四舍五入或取整操作，将小数值转换为整数，并限制在[1,7]之间
-        trial_vars = round(7*trial_vars);
-        trial_vars = max(min(trial_vars, 7), 1);
 
-        
         % 将变异和交叉后得到的决策变量赋值给试验个体
         trial(1:dim) = trial_vars;
         
         % 计算试验个体的目标函数值
         trial_objectives = fitness(trial_vars, m, n, com, spc, COM, SPC, N, r, Ur, D, x0, rho, v, ka, epsilon, sigma, p);
-        
-        % 计算试验个体的约束函数值
-        gfun = 0;
-        cs = zeros(1, n);  % 卖家实际供应量
-        for k = 1 : n
-            cs(k) = sum(com(trial_vars(1:m) == k));
-            gfun = gfun + max(cs(k)-COM(k),0);
-        end
-
-        ss = zeros(1, n);  % 卖家实际供应量
-        for k = 1 : n
-            ss(k) = sum(spc(trial_vars(m+1:m*2) == k));
-            gfun = gfun + max(ss(k)-SPC(k),0);
-        end
-        
-        % 将目标函数值和约束函数值赋值给试验个体
-        trial(dim + 1:dim + 2) = trial_objectives + gfun * 1e8;
-        
-        % 如果试验个体支配父代个体，进行替换
-        if dominates(trial_objectives, parent(dim + 1:end))
+        trial(dim+1:end) = trial_objectives;
+        weightVector = weightVectors(i, :); % 获取当前子问题的权重向量
+        fitnessParent = fitnessFunction(parent(dim + 1:end), weightVector); % 计算父代个体的适应度函数值
+        fitnessTrial = fitnessFunction(trial_objectives, weightVector); % 计算试验个体的适应度函数值
+        if fitnessTrial < fitnessParent % 如果试验个体的适应度函数值更小，说明更优
             offspring(j, :) = trial;
         else
-            % 如果试验个体不支配父代个体，根据权重向量和适应度函数选择更优的一个保留
-            weightVector = weightVectors(i, :); % 获取当前子问题的权重向量
-            fitnessParent = fitnessFunction(parent(dim + 1:end), weightVector); % 计算父代个体的适应度函数值
-            fitnessTrial = fitnessFunction(trial_objectives, weightVector); % 计算试验个体的适应度函数值
-            if fitnessTrial < fitnessParent % 如果试验个体的适应度函数值更小，说明更优
-                offspring(j, :) = trial;
-            else
-                offspring(j, :) = parent;
-            end
+            offspring(j, :) = parent;
         end
     end
+end
+
 % 定义差分进化函数，主要实现归一化
-    function trial_vars = gendifEvo(trial, parent, a, b, c, F, CR)
-        normalizedParent = normalizeMatrix(parent);
-        normalizedA = normalizeMatrix(a);
-        normalizedB = normalizeMatrix(b);
-        normalizedC = normalizeMatrix(c);
+%     function trial_vars = gendifEvo(trial, parent, a, b, c, F, CR)
+%         normalizedParent = normalizeMatrix(parent);
+%         normalizedA = normalizeMatrix(a);
+%         normalizedB = normalizeMatrix(b);
+%         normalizedC = normalizeMatrix(c);
+%         % 执行差分进化的变异操作
+%         trial = normalizedParent + F * (normalizedA - normalizedB) + F * (normalizedC - normalizedParent);
+%         
+%         % 执行差分进化的交叉操作
+%         mask = rand < CR;
+%         trial_vars = mask .* trial+ (1 - mask) .* normalizedParent;
+%         trial_vars = round(7*trial_vars);
+%         trial_vars = max(min(trial_vars, 7), 1);
+%     end
+    function trial_vars = gendifEvo(parent, Pm, CR, c, dim, n)
         % 执行差分进化的变异操作
-        trial = normalizedParent + F * (normalizedA - normalizedB) + F * (normalizedC - normalizedParent);
-        
+        x = parent;
         % 执行差分进化的交叉操作
         mask = rand < CR;
-        trial_vars = mask .* trial+ (1 - mask) .* normalizedParent;
+        trial_vars = mask .* c+ (1 - mask) .* parent;
+        if rand < Pm
+            r0 = randi(dim);
+            x(r0) = randi(n);
+        end
+        trial_vars = x;
     end
     function normalized_matrix = normalizeMatrix(matrix)
         min_values = min(matrix);
         max_values = max(matrix);
-        
         normalized_matrix = (matrix - min_values) ./ (max_values - min_values);
     end
-% 定义适应度函数，根据权重向量和目标函数值计算一个标量值，用于评价个体的优劣
+
     function fitnessValue = fitnessFunction(objectives, weightVector)
         numObjectives = length(objectives); % 获取目标函数的个数
         fitnessValue = 0; % 初始化适应度函数值为0
@@ -89,5 +78,3 @@ function offspring = evolveSubproblem(gbest, i, neighbors, weightVectors, F, CR,
             fitnessValue = fitnessValue + objectives(ii) * weightVector(ii);
         end
     end
-
-end
