@@ -1,4 +1,4 @@
-function [com, spc, COM, SPC, Ur, r, N, D, x0] = generate_data(m, n, swt)
+function [com, spc, COM, SPC, Ur, r, N, D, x0] = generate_data(m, n, swt, rep)
 % 生成服从高斯分布的需求和供给数据
 % 输入参数：
 % m - 买家的数量

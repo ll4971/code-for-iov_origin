@@ -4,12 +4,14 @@ clear
 close all
 num_experiments = 1;
 %% 输入数据
+% 输入买家和卖家的数量
 m = 50; % 买家数量
 n = 7; % 卖家数量
 swt = 1; % 1：添加紧急程度；0：取消紧急程度
+rep = 0; % 1:存在信誉变化；0：不存在信誉变化
 % 调用 generate_data 函数生成需求和供给数据
-[com, spc, COM, SPC, Ur, r, N, D, x0] = generate_data(m, n, swt);
-% 输入买家和卖家的数量
+[com, spc, COM, SPC, Ur, r, N, D, x0] = generate_data(m, n, swt, rep);
+
 
     rho = 0.5; % 最大收益目标函数买家花费占比
     ka = 10;   %
@@ -68,7 +70,7 @@ for times = 1:num_experiments
     ylabel('资源耗能和')
     grid on
     title('帕累托解集')
-    figure(2)02/58[[6]]
+    figure(2)
     plot(FG1,'k-')
     xlabel('迭代次数')
     ylabel('市场总价值')

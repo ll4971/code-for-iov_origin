@@ -3,27 +3,28 @@ clc
 clear
 close all
 num_experiments = 1;
+
 %% 输入数据
+% 输入买家和卖家的数量
 m = 50; % 买家数量
 n = 7; % 卖家数量
 swt = 1; % 1：添加紧急程度；0：取消紧急程度
+rep = 0; % 1:存在信誉变化；0：不存在信誉变化
 % 调用 generate_data 函数生成需求和供给数据
-[com, spc, COM, SPC, Ur, r, N, D, x0] = generate_data(m, n, swt);
-% 输入买家和卖家的数量
-
-    rho = 0.5; % 最大收益目标函数买家花费占比
-    ka = 10;   %
-    v = 0.5;    % 最大收益目标函数卖家收入占比
-    epsilon = 1;
-    sigma = 6;
-    p = 1000; % 传输功率
-    %% 算法数据
-    NP = 80;          % 种群数量
-    maxgen = 6000;     % 迭代次数
-    Pc = 0.8;
-    Pm = 0.2;
-    M = 2;            % 目标函数个数
-    dim = m * 2 ;      % 决策变量维数
+[com, spc, COM, SPC, Ur, r, N, D, x0] = generate_data(m, n, swt, rep);
+rho = 0.5; % 最大收益目标函数买家花费占比
+ka = 10;   %
+v = 0.5;    % 最大收益目标函数卖家收入占比
+epsilon = 1;
+sigma = 6;
+p = 1000; % 传输功率
+%% 算法数据
+NP = 80;          % 种群数量
+maxgen = 6000;     % 迭代次数
+Pc = 0.8;
+Pm = 0.2;
+M = 2;            % 目标函数个数
+dim = m * 2 ;      % 决策变量维数
 %% 主循环
 for times = 1:num_experiments
     rng(8);

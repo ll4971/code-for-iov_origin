@@ -1,4 +1,4 @@
-function [com, spc, COM, SPC, Ur, r, N, D, x0] = generate_data(m, n, swt)
+function [com, spc, COM, SPC, Ur, r, N, D, x0] = generate_data(m, n, swt, rep)
 % 生成服从高斯分布的需求和供给数据
 % 输入参数：
 % m - 买家的数量
@@ -55,9 +55,11 @@ elseif swt ==0
     Ur = ones(1,m);
 end
 
+if rep == 0
 %% 生成 r 变量
 r = randi([1, 10], m, n); % 生成一个 10 x 7 的矩阵，服从 [0, 10] 区间的均匀分布
-
+elseif rep == 1
+end
 %% 生成服从对数正太1-80的D
     % 生成一个大小为 10x7 的矩阵，元素为随机数
     % 使用 lognrnd 函数生成对数正态分布随机数
