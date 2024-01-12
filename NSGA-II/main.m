@@ -2,10 +2,10 @@
 clc
 clear
 close all
-num_experiments = 1;
+num_experiments = 50;
 %% 算法数据
 NP = 100;          % 种群数量
-maxgen = 200;     % 迭代次数
+maxgen_base = 100;     % 基础迭代次数
 Pc = 0.8;
 Pm = 0.2;
 M = 2;            % 目标函数个数
@@ -23,7 +23,7 @@ for times = 1:num_experiments
     rng(times);
     %% 输入数据
     % 输入买家和卖家的数量
-    m = 80*times; % 买家数量
+    m = 2*times; % 买家数量
     n = 3; % 卖家数量
     swt = 1; % 1：添加紧急程度；0：取消紧急程度
     rep = 0; % 1:存在信誉变化；0：不存在信誉变化
@@ -36,6 +36,7 @@ for times = 1:num_experiments
     %% 非支配排序（non-domination-sort）
     chrom = nonDominatedSort(chrom, M, dim );
     %% 记录延迟的数组
+    maxgen = maxgen_base * m; %实际迭代次数
     delay = zeros(maxgen, 1);
     start_time = tic;
     elapsed_time = zeros(maxgen, 1);
